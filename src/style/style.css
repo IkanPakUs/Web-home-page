@@ -1,0 +1,150 @@
+/* Variable */
+:root {
+    --primary-color: #1B2430;
+    --secondary-color: #292a302a;
+    --contras-color: #816797;
+    --text-color: #ebebdb;
+
+    --red-color: #F94C66;
+    --green-color: #76BA99;
+    --blue-color: #47B5FF;
+}
+
+/* GLobal */
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Baloo 2', cursive;
+}
+
+body {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.bg-red {   
+    background-color: var(--red-color);
+}
+
+.bg-green {
+    background-color: var(--green-color);
+}
+
+.bg-blue {
+    background-color: var(--blue-color);
+}
+
+/* Home */
+#home {
+    width: 75%;
+    padding-top: 50px;
+}
+
+#home h1 {
+    font-weight: 700;
+    font-size: 64px;
+}
+
+.section_wrap {
+    margin-top: 20px;
+}
+
+.content {
+    margin-top: 75px;
+}
+
+.nav ul {
+    list-style: none;
+    display: flex;
+}
+
+.nav ul li {
+    font-size: 26px;
+    padding-right: 15px;
+}
+
+.nav ul li .menu {
+    position: relative;
+}
+
+.nav ul li .menu.active::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--text-color);
+}
+
+.section .title-info {
+    width: fit-content;
+    font-weight: 700;
+    border-radius: 2px;
+    text-align: center;
+    padding: 3px 5px;
+    opacity: 0.9;
+}
+
+.section .card-section {
+    padding-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1 1 auto;
+}
+
+.section .card-section .card {
+    width: 200px;
+    min-height: 120px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 10px;
+    margin: 0px 30px 30px 0px;
+}
+
+.section .card-section .card__info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.section .card__info .info__icon {
+    width: 28px;
+    height: 28px;
+    padding-right: 10px;
+}
+
+.section .card__info .top__info {
+    display: flex;
+    align-items: start;
+    margin-bottom: 25px;
+}
+
+.section .card__info .icon__image {
+    width: 100%;
+}
+
+.section .card__info .info__title {
+    font-size: 21px;
+}
+
+.section .card__info .info__link span {
+    font-size: 16px;
+    text-decoration: underline;
+    font-weight: 100;
+    padding: 0 10px;
+}
