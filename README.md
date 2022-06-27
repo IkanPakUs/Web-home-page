@@ -2,7 +2,7 @@
 
 ![image](https://user-images.githubusercontent.com/66059215/175879188-2492dbfb-3abf-4640-9951-96054b5b68ce.png)
 
-#Require to install
+# Require to install
 
 1. Fork this repo
 2. Adjustment this gallery or theme with your own
