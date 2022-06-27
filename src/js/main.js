@@ -29,11 +29,17 @@ const gallery_list = [
                 link_name: "gitlab.com",
             },
             {
-                favicon: "https://github.com/favicon.ico",
+                favicon: "https://res.cloudinary.com/didlpymlt/image/upload/v1656312889/WebIcon/github-logo_omewut.png",
                 name: "Github",
                 link: "https://github.com",
                 link_name: "github.com"
             },
+        ]
+    },
+    {
+        title: "Programing",
+        bg_color: "#202647",
+        list: [
             {
                 favicon: "https://laravel.com/img/favicon/favicon-32x32.png",
                 name: "Laravel",
@@ -187,7 +193,7 @@ const templateCard = (data_card) => {
                 <a class="card__info" href="${data_card.link}">
                     <div class="top__info">
                         <div class="info__icon">
-                            <img class="icon__image" src="${data_card.favicon}" alt=${data_card.name}">
+                            <img class="icon__image" loading="lazy" src="${data_card.favicon}" alt=${data_card.name}">
                         </div>
                         <div class="info__title">
                             <h5> ${data_card.name}</h5>
