@@ -73,6 +73,24 @@ const gallery_list = [
         ]
     },
     {
+        title: "Design",
+        bg_color: "#0a5457",
+        list: [
+            {
+                favicon: "https://cdn.dribbble.com/assets/favicon-b38525134603b9513174ec887944bde1a869eb6cd414f4d640ee48ab2a15a26b.ico",
+                name: "Dribble",
+                link: "https://dribbble.com/",
+                link_name: "dribbble.com"
+            },
+            {
+                favicon: "https://static.figma.com/app/icon/1/favicon.svg",
+                name: "Figma",
+                link: "https://www.figma.com/files/recent?fuid=936846913075180406",
+                link_name: "www.figma.com"
+            },
+        ]
+    },
+    {
         title: "Entertaint",
         bg_color: "#26551C",
         list: [
