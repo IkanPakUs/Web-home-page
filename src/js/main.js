@@ -3,11 +3,24 @@ const $  = (el) => {
     return document.querySelector(el);
 };
 
+const all = (el) => {
+    return document.querySelectorAll(el);
+}
+
 // Global variable
-const data_list = [
+const title_name = "Mang Arya";
+
+const menu_list = [
+    {
+        title: "Gallery",
+        icon: "bi-columns-gap"
+    },
+];
+
+const gallery_list = [
     {
         title: "Work",
-        bg_color: "bg-red",
+        bg_color: "#472620",
         list: [
             {
                 favicon: "https://gitlab.com/favicon.ico",
@@ -55,7 +68,7 @@ const data_list = [
     },
     {
         title: "Entertaint",
-        bg_color: "bg-green",
+        bg_color: "#26551C",
         list: [
             {
                 favicon: "https://www.youtube.com/favicon.ico",
@@ -79,7 +92,7 @@ const data_list = [
     },
     {
         title: "Personal",
-        bg_color: "bg-blue",
+        bg_color: "#87612B",
         list: [
             {
                 favicon: "https://mail.google.com/favicon.ico",
@@ -87,21 +100,71 @@ const data_list = [
                 link: "https://mail.google.com/mail/u/0/#inbox",
                 link_name: "mail.google.com"
             },
+            {
+                favicon: "https://static-exp2.licdn.com/sc/h/akt4ae504epesldzj74dzred8",
+                name: "Linkedin",
+                link: "https://www.linkedin.com/",
+                link_name: "linkedin.com"
+            },
         ]
     }
 ]
 
 // Method
 document.addEventListener('DOMContentLoaded', () => {
+    loadTitle();
+    loadMenu();
     loadSection();
 }, false);
 
-const loadSection = () => {
-    const element = data_list.map((list) => {
-        return templateSection(list);
+const loadTitle = () => {
+    $('#home h1 span').innerHTML = title_name;
+}
+
+const loadMenu = () => {
+    const menu = menu_list.map((list, i) => {
+        return templateMenu(list, i);
     }).join(" ");
 
-    $('.content').innerHTML = element;
+    $('.nav ul').innerHTML = menu;
+}
+
+const loadSection = () => {
+    load["Gallery"]();
+
+    const list_el_menu = all('.menu a');
+
+    list_el_menu.forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const selected_page = e.target.getAttribute('page');
+            load[selected_page]();
+        });
+    });
+}
+
+const load = {
+    "Gallery": () => {
+        const element = gallery_list.map((list) => {
+            return templateSection(list);
+        }).join(" ");
+
+        $('.content').innerHTML = element;
+    },
+}
+
+
+// Template
+const templateMenu = (data_menu, index) => {
+    return `<li>
+                <div class="menu ${index == 0 ? 'active' : ''}">
+                    <a href="#" page="${data_menu.title}"> 
+                        <i class="bi ${data_menu.icon}"></i>
+                        ${data_menu.title}
+                    </a>
+                </div>
+            </li>`
 }
 
 const templateSection = (data_section) => {
@@ -110,7 +173,7 @@ const templateSection = (data_section) => {
     }).join(" ");
 
     return `<div class="section">
-                <div class="title-info ${data_section.bg_color}">
+                <div class="title-info" style="background-color: ${data_section.bg_color}">
                     ${data_section.title}
                 </div>
                 <div class="card-section">
