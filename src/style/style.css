@@ -279,6 +279,7 @@ a:hover {
 }
 
 .calendar__body .calendar__table .table__date td.ls-month {
+  pointer-events: none;
   color: var(--secondary-color);
 }
 
