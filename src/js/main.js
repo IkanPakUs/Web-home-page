@@ -305,16 +305,12 @@ const load = {
     "Schedule": () => {
         const schedule = templateSchedule();
 
-        setTimeout(() => {
-            all('.list__card').forEach(el => el.classList.remove('animate'));
-        }, 0);
-
         $('.content').innerHTML = schedule;
-
 
         loadDateNow();
         moveMonth();
         dateEventBtn();
+        templateEvent();
     }
 }
 
@@ -331,7 +327,9 @@ const loadDateNow = (year, month) => {
     $('.header__info .year').innerHTML = info_header.getFullYear();
     $('.header__info .year').setAttribute('year', info_header.getFullYear());
     
-    $('.event-wrap .date_now').innerHTML = date_now.getDate() + " " + date_now.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_now.getDay()];
+    const date_info = date_now.getDate() + " " + date_now.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_now.getDay()];
+    $('.event-wrap .date_now').setAttribute('date', date_info)
+    $('.event-wrap .date_now').innerHTML = date_info;
 }
 
 const loadCalendar = (year, month) => {
@@ -390,12 +388,14 @@ const dateEventBtn = () => {
 
             const date_convert = new Date(obj_date.year, obj_date.month, obj_date.date);
 
-            $('.event-wrap').innerHTML = templateEvent(obj_date);
-            $('.event-wrap .date_now').innerHTML = date_convert.getDate() + " " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
+            const date_info_now = $('.date_now').getAttribute('date');
+            const date_info = date_convert.getDate() + " " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
 
-            setTimeout(() => {
-                all('.list__card').forEach(el => el.classList.remove('animate'));
-            }, 0);
+            if (date_info_now != date_info) {
+                templateEvent(obj_date);
+                $('.event-wrap .date_now').setAttribute('date', date_info);
+                $('.event-wrap .date_now').innerHTML = date_info;
+            }
         })
     });
 }
@@ -451,14 +451,20 @@ const templateCard = (data_card) => {
 
 const templateSchedule = () => {
     const calendar = templateCalendar();
-    const event = templateEvent();
 
     return `<div class="schedule">
                 <div class="calendar-wrap">
                     ${calendar}
                 </div>
                 <div class="event-wrap">
-                    ${event}
+                    <div class="event__title">
+                        <h5>Events</h5>
+                        <span class="date_now" date=""></span>
+                    </div>
+                    <div class="event__list">
+                        <div class="list-wrap">
+                        </div>
+                    </div>
                 </div>
             </div>`
 }
@@ -624,6 +630,7 @@ const templateCountEvent = (date) => {
 }
 
 const templateEvent = (date) => {
+    $('.list-wrap').innerHTML = "";
 
     if (!date) {
         date = {
@@ -635,30 +642,31 @@ const templateEvent = (date) => {
     
     const today_event = typeof events != "undefined" ? events.find(v => v.date == date.date && v.month == (Number(date.month) + 1) && v.year == date.year) : null;
 
-    let event = "";
+    let event = [];
 
     if (today_event) {
-        event = today_event.events.map((event) => {
-            return templateEventCard(event);
-        }).join(" ");
+        event = today_event.events.map((event, i) => {
+            return templateEventCard(event, i);
+        });
     } else {
-        event = templateNotEvent();
+        event = [templateNotEvent()];
     }
     
-    return `<div class="event__title">
-                <h5>Events</h5>
-                <span class="date_now"></span>
-            </div>
-            <div class="event__list">
-                <div class="list-wrap">
-                    ${event}
-                </div>
-            </div>`
+    event.forEach((el, i) => {
+        setTimeout(() => {
+            const event_card = document.createRange().createContextualFragment(el, 'text/html');
+            $('.list-wrap').appendChild(event_card);
+    
+            setTimeout(() => {
+                $(`.list__card[id="${i}"]`).classList.remove('animate');
+            }, 100);
+        }, 150 * (i + 1));
+    });
 }
 
-const templateEventCard = (event) => {
+const templateEventCard = (event, index) => {
     
-    return `<div class="list__card animate">
+    return `<div class="list__card animate" id="${index}">
                 <div class="card__time">
                     ${event.from} - ${event.to} ${event.time}
                 </div>
@@ -672,7 +680,7 @@ const templateEventCard = (event) => {
 }
 
 const templateNotEvent = () => {
-    return `<div class="list__card animate">
+    return `<div class="list__card animate" id="0">
                 <div class="card__title">
                     Nothing planned for the day
                 </div>
