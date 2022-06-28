@@ -140,6 +140,18 @@ const gallery_list = [
                 link: "https://www.linkedin.com/",
                 link_name: "linkedin.com"
             },
+            {
+                favicon: "https://elearning.stikom-bali.ac.id/pluginfile.php/1/theme_mb2mcl/favicon/1646982263/itbstikombali.ico",
+                name: "E-Learning Stikom Bali",
+                link: "https://elearning.stikom-bali.ac.id",
+                link_name: "elearning.stikom-bali.ac.id"
+            },
+            {
+                favicon: "https://sion.stikom-bali.ac.id/assets/images/icon.png",
+                name: "Sion Stikom Bali",
+                link: "https://sion.stikom-bali.ac.id/",
+                link_name: "sion.stikom-bali.ac.id"
+            },
         ]
     }
 ]
@@ -149,25 +161,99 @@ const events = [
         date: 8,
         month: 6,
         year: 2022,
-        count_event: 2
+        events: [
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            }
+        ]
     },
     {
         date: 20,
         month: 6,
         year: 2022,
-        count_event: 1
+        events: [
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            },
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            },
+        ]
     },
     {
         date: 28,
         month: 6,
         year: 2022,
-        count_event: 4
+        events: [
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            },
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            },
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            },
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            }
+        ]
     },
     {
         date: 30,
         month: 6,
         year: 2022,
-        count_event: 3
+        events: [
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            },
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            }, 
+            {
+                from: "11:30",
+                to: "12:00",
+                time: "AM",
+                title: "Break",
+                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
+            }
+        ]
     },
 ]
 
@@ -219,10 +305,16 @@ const load = {
     "Schedule": () => {
         const schedule = templateSchedule();
 
+        setTimeout(() => {
+            all('.list__card').forEach(el => el.classList.remove('animate'));
+        }, 0);
+
         $('.content').innerHTML = schedule;
+
 
         loadDateNow();
         moveMonth();
+        dateEventBtn();
     }
 }
 
@@ -280,6 +372,38 @@ const modifyDate = () => {
     $('.table__date').innerHTML = dates;
 }
 
+const dateEventBtn = () => {
+    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const date = all('.table__date .date');
+
+    date.forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const selected_date = e.target.getAttribute("date").split("-");
+
+            const obj_date = {
+                date: selected_date.at(2),
+                month: selected_date.at(1),
+                year: selected_date.at(0),
+            }
+
+            const date_convert = new Date(obj_date.year, obj_date.month, obj_date.date);
+
+            $('.event-wrap').innerHTML = templateEvent(obj_date);
+            $('.event-wrap .date_now').innerHTML = date_convert.getDate() + " " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
+
+            setTimeout(() => {
+                all('.list__card').forEach(el => el.classList.remove('animate'));
+            }, 0);
+        })
+    });
+}
+
+const truncDesc = (desc) => {
+    return desc.length > 170 ? desc.slice(0, 167).concat('', '...') : desc;
+}
+
 // Template
 const templateMenu = (data_menu, index) => {
     return `<li>
@@ -330,8 +454,12 @@ const templateSchedule = () => {
     const event = templateEvent();
 
     return `<div class="schedule">
-                ${calendar}
-                ${event}
+                <div class="calendar-wrap">
+                    ${calendar}
+                </div>
+                <div class="event-wrap">
+                    ${event}
+                </div>
             </div>`
 }
 
@@ -339,30 +467,28 @@ const templateCalendar = () => {
     const days = templateDays();
     const dates = templateDates();
 
-    return `<div class="calendar-wrap">
-                <div class="calendar__header">
-                    <div class="header__info">
-                        <span class="month" month=""></span>
-                        <span class="year" year=""></span>
-                    </div>
-                    <div class="header__action">
-                        <i class="bi bi-chevron-left min-btn"></i>
-                        <span class="separator"></span>
-                        <i class="bi bi-chevron-right max-btn"></i>
-                    </div>
+    return `<div class="calendar__header">
+                <div class="header__info">
+                    <span class="month" month=""></span>
+                    <span class="year" year=""></span>
                 </div>
-                <div class="calendar__body">
-                    <table class="calendar__table">
-                        <thead class="table__day">
-                            <tr>
-                                ${days}
-                            </tr>
-                        </thead>
-                        <tbody class="table__date">
-                            ${dates}
-                        </tbody>
-                    </table>
+                <div class="header__action">
+                    <i class="bi bi-chevron-left min-btn"></i>
+                    <span class="separator"></span>
+                    <i class="bi bi-chevron-right max-btn"></i>
                 </div>
+            </div>
+            <div class="calendar__body">
+                <table class="calendar__table">
+                    <thead class="table__day">
+                        <tr>
+                            ${days}
+                        </tr>
+                    </thead>
+                    <tbody class="table__date">
+                        ${dates}
+                    </tbody>
+                </table>
             </div>`
 }
 
@@ -480,7 +606,7 @@ const templateWeek = (arr) => {
 
         const event = templateCountEvent(date);
 
-        return `<td date=${date.year}-${date.month}-${date.date}" class="date ${class_list}">
+        return `<td date="${Number(date.year)}-${Number(date.month)}-${Number(date.date)}" class="date ${class_list}">
                     ${date?.date ?? ""}
                     <div class="event-dot">${event}</div>
                 </td>`
@@ -492,39 +618,66 @@ const templateWeek = (arr) => {
 }
 
 const templateCountEvent = (date) => {
-    const event_day = events.find(v => v.date == date.date && v.month == (date.month + 1) && v.year == date.year);
-    
-    return event_day ? "<span></span>".repeat(event_day.count_event) : "";
+    const event_day = typeof events != "undefined" ? events.find(v => v.date == date.date && v.month == (date.month + 1) && v.year == date.year) : null;
+
+    return event_day ? "<span></span>".repeat(event_day?.events?.length) : "";
 }
 
-const templateEvent = () => {
-    return `<div class="event-wrap">
-                <div class="event__title">
-                    <h5>Events</h5>
-                    <span class="date_now">27 Jun, Monday</span>
+const templateEvent = (date) => {
+
+    if (!date) {
+        date = {
+            date: (new Date()).getDate(),
+            month: (new Date()).getMonth(),
+            year: (new Date()).getFullYear()
+        }
+    }
+    
+    const today_event = typeof events != "undefined" ? events.find(v => v.date == date.date && v.month == (Number(date.month) + 1) && v.year == date.year) : null;
+
+    let event = "";
+
+    if (today_event) {
+        event = today_event.events.map((event) => {
+            return templateEventCard(event);
+        }).join(" ");
+    } else {
+        event = templateNotEvent();
+    }
+    
+    return `<div class="event__title">
+                <h5>Events</h5>
+                <span class="date_now"></span>
+            </div>
+            <div class="event__list">
+                <div class="list-wrap">
+                    ${event}
                 </div>
-                <div class="event__list">
-                    <div class="list-wrap">
-                        <div class="list__card">
-                            <div class="card__title">
-                                Nothing planned for the day
-                            </div>
-                            <div class="card__desc">
-                                Enjoy your live !
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list__card">
-                        <div class="card__time">
-                            11:31 - 13:40 AM
-                        </div>
-                        <div class="card__title">
-                            Break
-                        </div>
-                        <div class="card__desc">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170
-                        </div>
-                    </div>
+            </div>`
+}
+
+const templateEventCard = (event) => {
+    
+    return `<div class="list__card animate">
+                <div class="card__time">
+                    ${event.from} - ${event.to} ${event.time}
+                </div>
+                <div class="card__title">
+                    ${event.title}
+                </div>
+                <div class="card__desc">
+                    ${truncDesc(event.desc)}
+                </div>
+            </div>`
+}
+
+const templateNotEvent = () => {
+    return `<div class="list__card animate">
+                <div class="card__title">
+                    Nothing planned for the day
+                </div>
+                <div class="card__desc">
+                    Enjoy your live !
                 </div>
             </div>`
 }

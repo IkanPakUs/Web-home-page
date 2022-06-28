@@ -153,9 +153,12 @@ a:hover {
 	font-size: 16px;
 }
 
+.section .card__info .info__link {
+	padding: 0 10px;
+}
+
 .section .card__info .info__link span {
 	font-size: 13px;
-	padding: 0 10px;
 	letter-spacing: 2px;
 }
 
@@ -258,6 +261,7 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   width: 30px;
+  pointer-events: none;
 }
 
 .calendar__body .calendar__table .table__date td .event-dot span {
@@ -267,6 +271,7 @@ a:hover {
   margin-right: 4px;
   margin-bottom: 4px;
   background-color: var(--text-color);
+  pointer-events: none;
 }
 
 .calendar__body .calendar__table .table__date td.ls-month .event-dot span {
@@ -312,7 +317,7 @@ a:hover {
 
 .event-wrap .event__list {
   position: relative;
-  max-height: 400px;
+  min-height: 400px;
 }
 
 .event-wrap .event__list::-webkit-scrollbar {
@@ -332,8 +337,9 @@ a:hover {
 
 .event-wrap .event__list .list-wrap {
   position: relative;
-  max-height: 400px;
+  height: 400px;
   overflow: scroll;
+  scroll-behavior: smooth;
   -ms-overflow-style: none;
   scrollbar-width: none
 }
@@ -342,6 +348,13 @@ a:hover {
   padding-top: 30px;
   padding-bottom: 20px;
   max-height: 175px;
+  opacity: 1;
+  transition: all 0.8s ease-in-out;
+}
+
+.event-wrap .event__list .list__card.animate {
+  transform: translateY(60px);
+  opacity: 0;
 }
 
 .event-wrap .event__list .list__card .card__time {
