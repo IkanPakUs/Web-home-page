@@ -368,6 +368,8 @@ const modifyDate = () => {
 
     $('.table__day tr').innerHTML = days;
     $('.table__date').innerHTML = dates;
+
+    dateEventBtn();
 }
 
 const dateEventBtn = () => {
