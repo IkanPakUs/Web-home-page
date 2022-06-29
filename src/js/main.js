@@ -177,7 +177,7 @@ const loadMenu = () => {
 }
 
 const loadSection = () => {
-    load["Schedule"]();
+    load["Gallery"]();
 
     const list_el_menu = all('.menu a');
 
