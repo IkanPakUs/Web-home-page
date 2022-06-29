@@ -156,106 +156,6 @@ const gallery_list = [
     }
 ]
 
-const events = [
-    {
-        date: 8,
-        month: 6,
-        year: 2022,
-        events: [
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            }
-        ]
-    },
-    {
-        date: 20,
-        month: 6,
-        year: 2022,
-        events: [
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            },
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            },
-        ]
-    },
-    {
-        date: 28,
-        month: 6,
-        year: 2022,
-        events: [
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            },
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            },
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            },
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            }
-        ]
-    },
-    {
-        date: 30,
-        month: 6,
-        year: 2022,
-        events: [
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            },
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            }, 
-            {
-                from: "11:30",
-                to: "12:00",
-                time: "AM",
-                title: "Break",
-                desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum obcaecati numquam, tempora excepturi maxime et dolorum, labore maiores soluta, dignissimos sapiente maks 170"
-            }
-        ]
-    },
-]
 
 // Method
 document.addEventListener('DOMContentLoaded', () => {
@@ -277,7 +177,7 @@ const loadMenu = () => {
 }
 
 const loadSection = () => {
-    load["Gallery"]();
+    load["Schedule"]();
 
     const list_el_menu = all('.menu a');
 
@@ -311,6 +211,7 @@ const load = {
         moveMonth();
         dateEventBtn();
         templateEvent();
+        createNewEvent();
     }
 }
 
@@ -406,6 +307,105 @@ const truncDesc = (desc) => {
     return desc.length > 170 ? desc.slice(0, 167).concat('', '...') : desc;
 }
 
+const createNewEvent = () => {
+    const new_event_btn = $('.new-btn');
+
+    new_event_btn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const form = document.createRange().createContextualFragment(templateEventForm(), 'text/html');
+        $('.event__list').appendChild(form);
+
+        setTimeout(() => {
+            $('.event__list').classList.add('form');
+            addEvent();
+            cancelForm();
+        }, 200);
+    });
+}
+
+const addEvent = () => {
+    const addBtn = $('.add-btn');
+
+    addBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const date = ($('#date').value).split('-');
+        const title = $('#title').value;
+        const time_start = $('#start').value;
+        const time_end = $('#end').value;
+        const desc = $('#desc').value;
+        
+        let events = localStorage.getItem('events') ?? [];
+        let create_new = true;
+
+        if (typeof events == "string") {
+            events = JSON.parse(events);
+
+            const day_event = events.find((v) => {
+                return v.date == date.at(2) && v.month == date.at(1) && v.year == date.at(0);
+            });
+
+            if (day_event) {
+                const data = {
+                    from: time_start,
+                    to: time_end,
+                    title,
+                    desc,
+                }
+
+                day_event.events = [...day_event.events, data];
+                create_new = false;
+            }
+        }
+        
+        if (typeof events == "object" && create_new) {
+            const data = {
+                date: date.at(2),
+                month: date.at(1),
+                year: date.at(0),
+                events: [
+                    {
+                        from: time_start,
+                        to: time_end,
+                        title,
+                        desc,
+                    }
+                ]
+            }
+
+            events = [...events, data];
+        }
+
+        localStorage.setItem('events', JSON.stringify(events));
+        templateEvent();
+
+        const dates = templateDates();
+        $('.table__date').innerHTML = dates;
+        dateEventBtn();
+
+        $('.event__list').classList.remove('form');
+
+        setTimeout(() => {
+            $('.event__form').remove();
+        }, 300);
+    });
+}
+
+const cancelForm = () => {
+    const cancel_btn = $('.cancel-btn');
+
+    cancel_btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        $('.event__list').classList.remove('form');
+    
+        setTimeout(() => {
+            $('.event__form').remove();
+        }, 300);
+    });
+}
+
 // Template
 const templateMenu = (data_menu, index) => {
     return `<li>
@@ -459,14 +459,54 @@ const templateSchedule = () => {
                     ${calendar}
                 </div>
                 <div class="event-wrap">
-                    <div class="event__title">
-                        <h5>Events</h5>
-                        <span class="date_now" date=""></span>
+                    <div class="event__header">
+                        <div class="event__title">
+                            <h5>Events</h5>
+                            <span class="date_now" date=""></span>
+                        </div>
+                        <div class="event__action">
+                            <button class="new-btn btn">New event</button>
+                        </div>
                     </div>
                     <div class="event__list">
                         <div class="list-wrap">
                         </div>
                     </div>
+                </div>
+            </div>`
+}
+
+const templateEventForm = () => {
+    const date = new Date().toISOString().substr(0, 10);
+
+    return `<div class="event__form">
+                <div class="form-column">
+                    <div class="form-group date-form">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" min="${date}" value="${date}"/>
+                    </div>
+                    <div class="form-group title-form">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" />
+                    </div>
+                </div>
+                <div class="form-column">
+                    <div class="form-group time-form">
+                        <label for="start">Time Start</label>
+                        <input type="time" id="start" />
+                    </div>
+                    <div class="form-group time-form">
+                        <label for="end">Time End</label>
+                        <input type="time" id="end" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="desc">Desc</label>
+                    <textarea id="desc" rows="3"></textarea>
+                </div>
+                <div class="action-form">
+                    <button class="cancel-btn btn">Cancel</button>
+                    <button class="add-btn btn">Add Event</button>
                 </div>
             </div>`
 }
@@ -626,7 +666,8 @@ const templateWeek = (arr) => {
 }
 
 const templateCountEvent = (date) => {
-    const event_day = typeof events != "undefined" ? events.find(v => v.date == date.date && v.month == (date.month + 1) && v.year == date.year) : null;
+    const events = localStorage.getItem('events');
+    const event_day = typeof events == "string" ? JSON.parse(events).find(v => v.date == date.date && v.month == (date.month + 1) && v.year == date.year) : null;
 
     return event_day ? "<span></span>".repeat(event_day?.events?.length) : "";
 }
@@ -641,8 +682,9 @@ const templateEvent = (date) => {
             year: (new Date()).getFullYear()
         }
     }
-    
-    const today_event = typeof events != "undefined" ? events.find(v => v.date == date.date && v.month == (Number(date.month) + 1) && v.year == date.year) : null;
+
+    const events = localStorage.getItem('events');
+    const today_event = typeof events == "string" ? JSON.parse(events).find(v => v.date == date.date && v.month == (Number(date.month) + 1) && v.year == date.year) : null;
 
     let event = [];
 
@@ -670,7 +712,7 @@ const templateEventCard = (event, index) => {
     
     return `<div class="list__card animate" id="${index}">
                 <div class="card__time">
-                    ${event.from} - ${event.to} ${event.time}
+                    ${event.from} - ${event.to}
                 </div>
                 <div class="card__title">
                     ${event.title}
