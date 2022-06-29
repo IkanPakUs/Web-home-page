@@ -389,7 +389,7 @@ a:hover {
 .event-wrap .event__list .list__card {
   padding-top: 30px;
   padding-bottom: 20px;
-  max-height: 175px;
+  max-height: 185px;
   opacity: 1;
   transition: all 0.8s ease-in-out;
 }
@@ -419,6 +419,23 @@ a:hover {
   font-size: 14px;
   opacity: 0.8;
   text-align: justify;
+}
+
+.event-wrap .event__list .list__card .card__action {
+  font-size: 13px;
+  margin-top: 20px;
+  font-weight: bold;
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: var(--contras-color);
+}
+
+.event-wrap .event__list .list__card .card__action span {
+  height: 10px;
+  width: 2px;
+  background-color: var(--text-color);
+  margin: 0px 10px;
 }
 
 .event-wrap .event__form .form-column {
@@ -470,6 +487,7 @@ a:hover {
   background-color: var(--primary-color);
   color: var(--text-color);
   border-bottom: 1px solid var(--contras-color);
+  font-size: 13px;
 }
 
 .event-wrap .event__form .form-group textarea:focus,
@@ -487,6 +505,7 @@ a:hover {
   background-color: var(--primary-color);
   color: var(--text-color);
   border-bottom: 1px solid var(--contras-color);
+  font-size: 13px;
 }
 
 .event-wrap .event__form .action-form {

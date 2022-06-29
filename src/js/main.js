@@ -228,7 +228,7 @@ const loadDateNow = (year, month) => {
     $('.header__info .year').innerHTML = info_header.getFullYear();
     $('.header__info .year').setAttribute('year', info_header.getFullYear());
     
-    const date_info = date_now.getDate() + " " + date_now.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_now.getDay()];
+    const date_info = date_now.getDate() + "' " + date_now.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_now.getDay()];
     $('.event-wrap .date_now').setAttribute('date', date_info)
     $('.event-wrap .date_now').innerHTML = date_info;
 }
@@ -292,10 +292,11 @@ const dateEventBtn = () => {
             const date_convert = new Date(obj_date.year, obj_date.month, obj_date.date);
 
             const date_info_now = $('.date_now').getAttribute('date');
-            const date_info = date_convert.getDate() + " " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
+            const date_info = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
 
             if (date_info_now != date_info) {
                 templateEvent(obj_date);
+
                 $('.event-wrap .date_now').setAttribute('date', date_info);
                 $('.event-wrap .date_now').innerHTML = date_info;
             }
@@ -325,70 +326,176 @@ const createNewEvent = () => {
 }
 
 const addEvent = () => {
+    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const addBtn = $('.add-btn');
 
     addBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
-        const date = ($('#date').value).split('-');
-        const title = $('#title').value;
-        const time_start = $('#start').value;
-        const time_end = $('#end').value;
-        const desc = $('#desc').value;
-        
-        let events = localStorage.getItem('events') ?? [];
-        let create_new = true;
-
-        if (typeof events == "string") {
-            events = JSON.parse(events);
-
-            const day_event = events.find((v) => {
-                return v.date == date.at(2) && v.month == date.at(1) && v.year == date.at(0);
-            });
-
-            if (day_event) {
-                const data = {
-                    from: time_start,
-                    to: time_end,
-                    title,
-                    desc,
-                }
-
-                day_event.events = [...day_event.events, data];
-                create_new = false;
-            }
-        }
-        
-        if (typeof events == "object" && create_new) {
-            const data = {
-                date: date.at(2),
-                month: date.at(1),
-                year: date.at(0),
-                events: [
-                    {
-                        from: time_start,
-                        to: time_end,
-                        title,
-                        desc,
-                    }
-                ]
-            }
-
-            events = [...events, data];
+        const input = {
+            date : ($('#date').value).split('-'),
+            title : $('#title').value,
+            time_start : $('#start').value,
+            time_end : $('#end').value,
+            desc : $('#desc').value,
         }
 
-        localStorage.setItem('events', JSON.stringify(events));
-        templateEvent();
+        addData({input});
+
+        const obj_date = {
+            date: input.date.at(2),
+            month: input.date.at(1) - 1,
+            year: input.date.at(0),
+        }
+
+        const date_convert = new Date(obj_date.year, obj_date.month, obj_date.date);
+        const date_info = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
+
+        $('.event-wrap .date_now').setAttribute('date', date_info);
+        $('.event-wrap .date_now').innerHTML = date_info;
+
+        templateEvent(obj_date);
 
         const dates = templateDates();
         $('.table__date').innerHTML = dates;
         dateEventBtn();
 
         $('.event__list').classList.remove('form');
-
         setTimeout(() => {
             $('.event__form').remove();
         }, 300);
+    });
+}
+
+const addData = ({input}) => {
+    let events = localStorage.getItem('events') ?? [];
+    let create_new = true;
+
+    if (typeof events == "string") {
+        events = JSON.parse(events);
+
+        const day_event = events.find((v) => {
+            return v.date == input.date.at(2) && v.month == input.date.at(1) && v.year == input.date.at(0);
+        });
+
+        if (day_event) {
+            const data = {
+                id: day_event.events.length,
+                from: input.time_start,
+                to: input.time_end,
+                title: input.title,
+                desc: input.desc,
+            }
+
+            day_event.events = [...day_event.events, data];
+            create_new = false;
+        }
+    }
+
+    if (typeof events == "object" && create_new) {
+        const data = {
+            id: events.length,
+            date: input.date.at(2),
+            month: input.date.at(1),
+            year: input.date.at(0),
+            events: [
+                {
+                    from: input.time_start,
+                    to: input.time_end,
+                    title: input.title,
+                    desc: input.desc,
+                }
+            ]
+        }
+
+        events = [...events, data];
+    }
+
+    localStorage.setItem('events', JSON.stringify(events));
+}
+
+const updateEvent = () => {
+    const update_btn = $('.update-btn');
+
+    update_btn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const event_id = ($('#hidden-value').value).split('_');
+
+        let events = JSON.parse(localStorage.getItem('events'));
+        const event = events.find(v => v.id == event_id.at(0));
+        
+        const date = ($('#date').value).split('-');
+        
+        if (date.at(0) == event.year && date.at(1) == event.month && date.at(2) == event.date) {
+            const event_detail = event.events.find((v, i) => i == event_id.at(1));
+
+            event_detail.title = $('#title').value;
+            event_detail.from = $('#start').value;
+            event_detail.to = $('#end').value;
+            event_detail.desc = $('#desc').value;
+
+            localStorage.setItem('events', JSON.stringify(events));
+        } else {
+            event.events = event.events.filter((v, i) => i != event_id.at(1));
+            localStorage.setItem('events', JSON.stringify(events));
+
+            const input = {
+                date: ($('#date').value).split('-'),
+                title: $('#title').value,
+                time_start: $('#start').value,
+                time_end: $('#end').value,
+                desc: $('#desc').value,
+            }
+
+            addData({input});
+        }
+
+        const obj_date = {
+            date: date.at(2),
+            month: date.at(1) - 1,
+            year: date.at(0),
+        }
+
+        templateEvent(obj_date);
+
+        const dates = templateDates();
+        $('.table__date').innerHTML = dates;
+        dateEventBtn();
+
+        $('.event__list').classList.remove('form');
+        setTimeout(() => {
+            $('.event__form').remove();
+        }, 300);
+    });
+}
+
+const removeEvent = () => {
+    const remove_btn = all('.rm-btn');
+
+    remove_btn.forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+    
+            const id_event = e.target.getAttribute('id').split("_");
+            const today_events = JSON.parse(localStorage.getItem('events'));
+    
+            const event = today_events.find((v) => v.id == id_event.at(0));
+            event.events = event.events.filter((v, i) => i != id_event.at(1));
+
+            localStorage.setItem('events', JSON.stringify(today_events));
+
+            const obj_date = {
+                date: event.date,
+                month: event.month - 1,
+                year: event.year,
+            }
+            templateEvent(obj_date);
+    
+            const dates = templateDates();
+            $('.table__date').innerHTML = dates;
+            dateEventBtn();
+        });
     });
 }
 
@@ -405,6 +512,34 @@ const cancelForm = () => {
         }, 300);
     });
 }
+
+const editEvent = () => {
+    const edit_btn = all('.edit-btn');
+
+    edit_btn.forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const id_event = e.target.getAttribute('id').split("_");
+            const today_events = JSON.parse(localStorage.getItem('events'));
+
+            const event = today_events.find((v) => v.id == id_event.at(0));
+            event.events = event.events.find((v, i) => i == id_event.at(1));
+
+            const date = new Date(event.year, (event.month - 1), (Number(event.date) + 1)).toISOString().substr(0, 10);
+
+            const form = document.createRange().createContextualFragment(templateEventForm(date, event, id_event.at(1), "Update"), 'text/html');
+            $('.event__list').appendChild(form);
+
+            setTimeout(() => {
+                $('.event__list').classList.add('form');
+                updateEvent();
+                cancelForm();
+            }, 200);
+        })
+    });
+}
+
 
 // Template
 const templateMenu = (data_menu, index) => {
@@ -476,10 +611,11 @@ const templateSchedule = () => {
             </div>`
 }
 
-const templateEventForm = () => {
-    const date = new Date().toISOString().substr(0, 10);
+const templateEventForm = (date, data = null, index = null, type = "Add") => {
+    date = date ?? new Date().toISOString().substr(0, 10);
 
     return `<div class="event__form">
+                <input type="hidden" id="hidden-value" value="${data?.id}_${index}"/>
                 <div class="form-column">
                     <div class="form-group date-form">
                         <label for="date">Date</label>
@@ -487,26 +623,26 @@ const templateEventForm = () => {
                     </div>
                     <div class="form-group title-form">
                         <label for="title">Title</label>
-                        <input type="text" id="title" />
+                        <input type="text" id="title" value="${data?.events.title ?? ''}" />
                     </div>
                 </div>
                 <div class="form-column">
                     <div class="form-group time-form">
                         <label for="start">Time Start</label>
-                        <input type="time" id="start" />
+                        <input type="time" id="start" value="${data?.events.from ?? ''}" />
                     </div>
                     <div class="form-group time-form">
                         <label for="end">Time End</label>
-                        <input type="time" id="end" />
+                        <input type="time" id="end" value="${data?.events.to ?? ''}"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="desc">Desc</label>
-                    <textarea id="desc" rows="3"></textarea>
+                    <textarea id="desc" rows="3">${data?.events.desc ?? ''}</textarea>
                 </div>
                 <div class="action-form">
                     <button class="cancel-btn btn">Cancel</button>
-                    <button class="add-btn btn">Add Event</button>
+                    <button class="${ type == "Add" ? 'add-btn' : 'update-btn'} btn">${type} Event</button>
                 </div>
             </div>`
 }
@@ -688,27 +824,36 @@ const templateEvent = (date) => {
 
     let event = [];
 
-    if (today_event) {
+    if (today_event?.events.length) {
         event = today_event.events.map((event, i) => {
-            return templateEventCard(event, i);
+            return templateEventCard(today_event.id, event, i);
         });
     } else {
         event = [templateNotEvent()];
     }
     
-    event.forEach((el, i) => {
-        setTimeout(() => {
-            const event_card = document.createRange().createContextualFragment(el, 'text/html');
-            $('.list-wrap').appendChild(event_card);
-    
+    new Promise((resolve) => {
+        event.forEach((el, i, arr) => {
             setTimeout(() => {
-                $(`.list__card[id="${i}"]`).classList.remove('animate');
-            }, 100);
-        }, 150 * (i + 1));
+                const event_card = document.createRange().createContextualFragment(el, 'text/html');
+                $('.list-wrap').appendChild(event_card);
+    
+                setTimeout(() => {
+                    $(`.list__card[id="${i}"]`).classList.remove('animate');
+                    
+                    if ((arr.length - 1) == i) 
+                        resolve();
+                }, 100);
+            }, 150 * (i + 1));
+        });
+    }).then(() => {
+        editEvent();
+        removeEvent();
     });
+
 }
 
-const templateEventCard = (event, index) => {
+const templateEventCard = (event_id, event, index) => {
     
     return `<div class="list__card animate" id="${index}">
                 <div class="card__time">
@@ -719,6 +864,15 @@ const templateEventCard = (event, index) => {
                 </div>
                 <div class="card__desc">
                     ${truncDesc(event.desc)}
+                </div>
+                <div class="card__action">
+                    <a href="#" class="edit-btn" id="${event_id}_${index}">
+                        edit
+                    </a>
+                    <span></span>
+                    <a href="#" class="rm-btn" id="${event_id}_${index}">
+                        remove
+                    </a>
                 </div>
             </div>`
 }
