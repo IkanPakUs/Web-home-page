@@ -730,7 +730,7 @@ const templateDates = () => {
     return dates.map((date) => {
         return 6 - (date.getDay() % 7) == 0 ? `{\"day\": ${date.getDay()}, \"date\": ${date.getDate()}, \"month\": ${date.getMonth()}, \"year\": ${date.getFullYear()}}-` 
                                             : `{\"day\": ${date.getDay()}, \"date\": ${date.getDate()}, \"month\": ${date.getMonth()}, \"year\": ${date.getFullYear()}}.`;
-    }).join("").split("-").map((v) => v.split('.').filter((v) => v != "")).map((week) => {
+    }).join("").split("-").map((v) => v.split('.').filter((v) => v != "")).filter(v => v.length).map((week) => {
         return templateWeek(week);
     }).join(" ");
 }
