@@ -96,7 +96,19 @@ const gallery_list = [
                 favicon: "https://static.figma.com/app/icon/1/favicon.svg",
                 name: "Figma",
                 link: "https://www.figma.com/files/recent?fuid=936846913075180406",
-                link_name: "www.figma.com"
+                link_name: "figma.com"
+            },
+            {
+                favicon: "https://app.diagrams.net/images/favicon-16x16.png",
+                name: "Draw.io",
+                link: "https://app.diagrams.net/",
+                link_name: "draw.io"
+            },
+            {
+                favicon: "https://www.pexels.com/assets/static/images/meta/favicon.ico",
+                name: "Pexels",
+                link: "https://www.pexels.com/",
+                link_name: "pexels.com"
             },
         ]
     },
