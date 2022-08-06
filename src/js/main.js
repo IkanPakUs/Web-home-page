@@ -18,6 +18,10 @@ const title_name = "Mang Arya";
 
 const menu_list = [
     {
+        title: "Search",
+        icon: "bi bi-search"
+    },
+    {
         title: "Gallery",
         icon: "bi-columns-gap"
     },
@@ -180,6 +184,20 @@ const loadTitle = () => {
     $('#home h1 span').innerHTML = title_name;
 }
 
+const search = () => {
+    const search = $('.form-input');
+    
+    search.addEventListener('keypress', (e) => {
+        e.preventDefault;
+
+        if (e.key == "Enter") {
+            const search_value = e.target.value;
+            window.location.href = `https://www.google.com/search?q=${search_value.split(' ').join('+')}`;
+        }
+
+    });
+}
+
 const loadMenu = () => {
     const menu = menu_list.map((list, i) => {
         return templateMenu(list, i);
@@ -207,6 +225,20 @@ const loadSection = () => {
 }
 
 const load = {
+    "Search": () => {
+        const element = `<div class="search">
+                            <div class="google-icon">
+                                <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Google">
+                            </div>
+                            <div class="form">
+                                <input class="form-input" type="text" placeholder="Search..">
+                            </div>
+                        </div>`
+        
+        $('.content').innerHTML = element;
+        
+        search();
+    },
     "Gallery": () => {
         const element = gallery_list.map((list) => {
             return templateSection(list);
@@ -556,7 +588,7 @@ const editEvent = () => {
 // Template
 const templateMenu = (data_menu, index) => {
     return `<li>
-                <div class="menu ${index == 0 ? 'active' : ''}" page="${data_menu.title}">
+                <div class="menu ${index == 1 ? 'active' : ''}" page="${data_menu.title}">
                     <a href="#" page="${data_menu.title}"> 
                         <i class="bi ${data_menu.icon}"></i>
                         ${data_menu.title}

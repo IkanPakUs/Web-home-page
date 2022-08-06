@@ -35,6 +35,59 @@ a:hover {
 	justify-content: center;
 }
 
+/* Search */
+.search {
+  width: 100%;
+  height: 45vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.search .google-icon {
+  height: 140px;
+  margin-bottom: 40px;
+}
+
+.search .google-icon img {
+  height: 100%;
+}
+
+.search .form {
+  position: relative;
+}
+
+.search .form .form-input {
+  height: 40px;
+  width: 600px;
+  border: none;
+  border-bottom: 2px solid var(--contras-color);
+  background-color: transparent;
+  color: var(--text-color);
+  padding: 5px;
+  box-sizing: border-box;
+  font-size: 20px;
+  margin-right: 20px;
+  letter-spacing: 2px;
+}
+
+.search .form input.form-input:focus {
+  outline: none;
+}
+
+.search .form .search-btn {
+  height: 40px;
+  width: 80px;
+  background-color: var(--contras-color);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  pointer-events: all;
+  cursor: pointer;
+}
+
 /* Home */
 #home {
 	width: 75%;
@@ -45,6 +98,13 @@ a:hover {
 	font-weight: bold;
 	font-size: 44px;
 	padding: 0px 10px;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 .section_wrap {
