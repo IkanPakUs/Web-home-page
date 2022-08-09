@@ -259,6 +259,18 @@ const load = {
     }
 }
 
+const dateChecker = (selected_date) => {
+    const date_now = new Date().setUTCHours(0, 0, 0, 0);
+    selected_date = new Date(selected_date).setUTCHours(0, 0, 0, 0);
+
+    if (date_now <= selected_date) {
+        $('.new-btn.btn').classList.remove('disable');
+        $('.new-btn.btn').disabled = false;
+    } else {
+        $('.new-btn.btn').classList.add('disable');
+        $('.new-btn.btn').disabled = true;
+    }
+}
 
 const loadDateNow = (year, month) => {
     const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -273,7 +285,7 @@ const loadDateNow = (year, month) => {
     $('.header__info .year').setAttribute('year', info_header.getFullYear());
     
     const date_info = date_now.getDate() + "' " + date_now.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_now.getDay()];
-    $('.event-wrap .date_now').setAttribute('date', date_info)
+    $('.event-wrap .date_now').setAttribute('date', date_now.toISOString().substr(0, 10))
     $('.event-wrap .date_now').innerHTML = date_info;
 }
 
@@ -336,13 +348,14 @@ const dateEventBtn = () => {
             const date_convert = new Date(obj_date.year, obj_date.month, obj_date.date);
 
             const date_info_now = $('.date_now').getAttribute('date');
-            const date_info = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
+            const date_info = date_convert.toISOString().substr(0, 8) + date_convert.getDate();
 
             if (date_info_now != date_info) {
                 templateEvent(obj_date);
+                dateChecker(date_info);
 
                 $('.event-wrap .date_now').setAttribute('date', date_info);
-                $('.event-wrap .date_now').innerHTML = date_info;
+                $('.event-wrap .date_now').innerHTML = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
             }
         })
     });
@@ -358,7 +371,10 @@ const createNewEvent = () => {
     new_event_btn.addEventListener('click', (e) => {
         e.preventDefault();
 
-        const form = document.createRange().createContextualFragment(templateEventForm(), 'text/html');
+        const selected_date = $('.date_now').getAttribute('date');
+        const date_format = new Date(selected_date).toISOString().substr(0, 10);
+        
+        const form = document.createRange().createContextualFragment(templateEventForm(date_format), 'text/html');
         $('.event__list').appendChild(form);
 
         setTimeout(() => {
@@ -396,7 +412,7 @@ const addEvent = () => {
         const date_info = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
 
         $('.event-wrap .date_now').setAttribute('date', date_info);
-        $('.event-wrap .date_now').innerHTML = date_info;
+        $('.event-wrap .date_now').innerHTML = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
 
         templateEvent(obj_date);
 

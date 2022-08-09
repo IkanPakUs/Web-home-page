@@ -396,6 +396,14 @@ a:hover {
   font-weight: bold;
   cursor: pointer;
   pointer-events: all;
+  transition: all 0.4s ease-in-out;
+}
+
+.event-wrap .btn.disable {
+  cursor: none;
+  pointer-events: none;
+  background-color: var(--shadow-text-color);
+  color: var(--text-color);
 }
 
 .event-wrap .event__list {
