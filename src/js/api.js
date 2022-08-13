@@ -1,10 +1,11 @@
-import * as config from './../../config.js';
+// "{\"access_token\":\"your-access-token\",\"user_id\":your-user-id}"
 
-const access_token = config?.access_token;
-const user_id = config?.user_id;
+const config = localStorage.getItem('config');
 
 const getEventFromGitlab = () => {
     return new Promise((resolve, reject) => {
+
+        const {access_token, user_id} = typeof config == "string" ? JSON.parse(config) : {};
 
         if (!access_token || !user_id) {
             return reject("Gitlab authentication failed");
