@@ -1,0 +1,16 @@
+name: GitHub Set Environment
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  secrets-in-github-actions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set Environment
+        env: 
+          GITLAB_ACCESS_KEY: ${{ secrets.GITLAB_ACCESS_KEY }}
+          GITLAB_USER_ID: ${{ secrets.GITLAB_USER_ID }}
+        run: echo "Set environment success"
