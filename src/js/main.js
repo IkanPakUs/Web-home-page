@@ -415,8 +415,8 @@ const getEvent = () => {
 
             return resolve(true);
         }).catch((err) => {
-            return resolve(true);
             console.log(err);
+            return resolve(true);
         });
 
     })
