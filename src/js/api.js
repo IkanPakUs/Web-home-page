@@ -1,4 +1,4 @@
-// "{\"access_token\":\"your-access-token\",\"user_id\":your-user-id}"
+// "{"access_token":"your-access-token","user_id":your-user-id}"
 
 const config = localStorage.getItem('config');
 
