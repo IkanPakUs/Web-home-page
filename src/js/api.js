@@ -1,5 +1,7 @@
-const access_token = process.env.GITLAB_ACCESS_KEY;
-const user_id = process.env.GITLAB_USER_ID;
+import * as config from './../../config.js';
+
+const access_token = config?.access_token;
+const user_id = config?.user_id;
 
 const getEventFromGitlab = () => {
     return new Promise((resolve, reject) => {
