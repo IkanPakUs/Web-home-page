@@ -1,5 +1,5 @@
-const access_token = proccess.env.GITLAB_ACCESS_KEY;
-const user_id = proccess.env.GITLAB_USER_ID;
+const access_token = process.env.GITLAB_ACCESS_KEY;
+const user_id = process.env.GITLAB_USER_ID;
 
 const getEventFromGitlab = () => {
     return new Promise((resolve, reject) => {
