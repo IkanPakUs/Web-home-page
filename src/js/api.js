@@ -1,7 +1,5 @@
-import * as config from './../../config.js';
-
-const access_token = config?.access_token;
-const user_id = config?.user_id;
+const access_token = proccess.env.GITLAB_ACCESS_KEY;
+const user_id = proccess.env.GITLAB_USER_ID;
 
 const getEventFromGitlab = () => {
     return new Promise((resolve, reject) => {

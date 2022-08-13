@@ -1,9 +1,0 @@
-// Config file
-
-const access_token = "your gitlab access token";
-const user_id = your gitlab user id;
-
-export {
-    access_token,
-    user_id
-};
