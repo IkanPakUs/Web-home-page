@@ -1,3 +1,5 @@
+import * as api from './api.js';
+
 // Helpers
 const $  = (el) => {
     return document.querySelector(el);
@@ -207,6 +209,7 @@ const loadMenu = () => {
 }
 
 const loadSection = () => {
+    $('.content').innerHTML = preload();
     load["Gallery"]();
 
     const list_el_menu = all('.menu a');
@@ -247,23 +250,29 @@ const load = {
         $('.content').innerHTML = element;
     },
     "Schedule": () => {
-        const schedule = templateSchedule();
+        $('.content').innerHTML = preload();
 
-        $('.content').innerHTML = schedule;
+        getEvent().then(() => {
+            const schedule = templateSchedule();
+    
+            $('.content').innerHTML = schedule;
+    
+            loadDateNow();
+            moveMonth();
+            dateEventBtn();
+            templateEvent();
+            createNewEvent();
+        });
 
-        loadDateNow();
-        moveMonth();
-        dateEventBtn();
-        templateEvent();
-        createNewEvent();
     }
 }
 
 const dateChecker = (selected_date) => {
-    const date_now = new Date().setUTCHours(0, 0, 0, 0);
-    selected_date = new Date(selected_date).setUTCHours(0, 0, 0, 0);
-
-    if (date_now <= selected_date) {
+    
+    const date_now = new Date(new Date().toISOString().substr(0, 10));
+    selected_date = new Date(new Date(selected_date.year, selected_date.month, Number(selected_date.date) + 1).toISOString().substr(0, 10));
+    
+    if (date_now == selected_date || date_now <= selected_date) {
         $('.new-btn.btn').classList.remove('disable');
         $('.new-btn.btn').disabled = false;
     } else {
@@ -352,7 +361,7 @@ const dateEventBtn = () => {
 
             if (date_info_now != date_info) {
                 templateEvent(obj_date);
-                dateChecker(date_info);
+                dateChecker(obj_date);
 
                 $('.event-wrap .date_now').setAttribute('date', date_info);
                 $('.event-wrap .date_now').innerHTML = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
@@ -363,6 +372,54 @@ const dateEventBtn = () => {
 
 const truncDesc = (desc) => {
     return desc.length > 170 ? desc.slice(0, 167).concat('', '...') : desc;
+}
+
+const getEvent = () => {
+    return new Promise(resolve => {
+        let sync_time = localStorage.getItem('last_sync') ?? null;
+        sync_time = typeof sync_time == "string" ? JSON.parse(sync_time) : sync_time;
+        
+        if (sync_time) {
+            const sync_date = new Date(sync_time.time).getDate();
+            const now_date = new Date().getDate();
+
+            if (sync_date == now_date) {
+                return resolve(true);
+            }
+        }
+
+        api.getEventFromGitlab().then((res) => {
+    
+            res.forEach(event => {
+                let input = {
+                    date: event.created_at.substr(0, 10).split("-"),
+                    title: event.title,
+                    time_start: event.created_at.substr(11, 6),
+                    time_end: "17:00",
+                    desc: event.description,
+                }
+    
+                input.date[0] = Number(input.date[0]);
+                input.date[1] = Number(input.date[1]);
+                input.date[2] = Number(input.date[2]);
+    
+                addData({input});
+            });
+
+            const sync = { 
+                time: new Date().toISOString(), 
+                status: "success" 
+            }
+
+            localStorage.setItem('last_sync', JSON.stringify(sync));
+
+            return resolve(true);
+        }).catch((err) => {
+            return resolve(true);
+            console.log(err);
+        });
+
+    })
 }
 
 const createNewEvent = () => {
@@ -446,9 +503,15 @@ const addData = ({input}) => {
                 title: input.title,
                 desc: input.desc,
             }
+            
+            const existing_event = day_event.events.find((v) => {
+                return v.title == data.title;
+            });
 
-            day_event.events = [...day_event.events, data];
-            create_new = false;
+            if (!existing_event) {
+                day_event.events = [...day_event.events, data];
+                create_new = false;
+            }
         }
     }
 
@@ -602,11 +665,17 @@ const editEvent = () => {
 
 
 // Template
+const preload = () => {
+    return `<div class="loading-wrap">
+                <div class="loading"></div>
+            </div>`;
+}
+
 const templateMenu = (data_menu, index) => {
     return `<li>
                 <div class="menu ${index == 1 ? 'active' : ''}" page="${data_menu.title}">
                     <a href="#" page="${data_menu.title}"> 
-                        <i class="bi ${data_menu.icon}"></i>
+                        <i class="bi ${data_menu.icon}" page="${data_menu.title}"></i>
                         ${data_menu.title}
                     </a>
                 </div>
@@ -864,13 +933,13 @@ const templateWeek = (arr) => {
 const templateCountEvent = (date) => {
     const events = localStorage.getItem('events');
     const event_day = typeof events == "string" ? JSON.parse(events).find(v => v.date == date.date && v.month == (date.month + 1) && v.year == date.year) : null;
-
+    
     return event_day ? "<span></span>".repeat(event_day?.events?.length) : "";
 }
 
 const templateEvent = (date) => {
     $('.list-wrap').innerHTML = "";
-
+    
     if (!date) {
         date = {
             date: (new Date()).getDate(),
@@ -891,7 +960,7 @@ const templateEvent = (date) => {
     } else {
         event = [templateNotEvent()];
     }
-    
+
     new Promise((resolve) => {
         event.forEach((el, i, arr) => {
             setTimeout(() => {
