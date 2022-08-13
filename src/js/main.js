@@ -371,7 +371,7 @@ const dateEventBtn = () => {
 }
 
 const truncDesc = (desc) => {
-    return desc.length > 170 ? desc.slice(0, 167).concat('', '...') : desc;
+    return desc && desc.length > 170 ? desc.slice(0, 167).concat('', '...') : desc ?? "";
 }
 
 const getEvent = () => {
