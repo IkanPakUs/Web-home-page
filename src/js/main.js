@@ -50,6 +50,12 @@ const gallery_list = [
                 link: "https://github.com",
                 link_name: "github.com"
             },
+            {
+                favicon: "https://a.trellocdn.com/prgb/dist/images/ios/apple-touch-icon-152x152-precomposed.f2e3f1c236fc15986203.png",
+                name: "Trello",
+                link: "https://trello.com/komangarya1/boards",
+                link_name: "trello.com"
+            },
         ]
     },
     {
