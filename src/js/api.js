@@ -11,8 +11,7 @@ const getEventFromGitlab = () => {
             return reject("Gitlab authentication failed");
         }
 
-        let sync_time = localStorage.getItem('last_sync') ?? null;
-
+        let sync_time = localStorage.getItem('last_sync') ?? { time: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString() };
         sync_time = typeof sync_time == "string" ? JSON.parse(sync_time) : sync_time;
 
         fetch(`https://gitlab.com/api/v4/issues?assignee_id=${user_id}&scope=all&created_after=${sync_time.time}`, {
