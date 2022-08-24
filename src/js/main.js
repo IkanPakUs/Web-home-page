@@ -395,13 +395,15 @@ const getEvent = () => {
         }
 
         api.getEventFromGitlab().then((res) => {
-    
-            res.forEach(event => {
+
+            res.reverse().forEach(event => {
+                const time_start = event.created_at.substr(11, 5).split(":").map((v, i) => i == 0 ? (Number(v) + 8 > 9 ? Number(v) + 8 : "0" + (Number(v) + 8).toString()) : v).join(":");
+
                 let input = {
                     date: event.created_at.substr(0, 10).split("-"),
                     title: event.title,
-                    time_start: event.created_at.substr(11, 6),
-                    time_end: "17:00",
+                    time_start: time_start,
+                    time_end: time_start.split(":")[0] >= 17 ? time_start : "17:00",
                     desc: event.description,
                 }
     
