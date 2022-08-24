@@ -20,15 +20,11 @@ const title_name = "Mang Arya";
 
 const menu_list = [
     {
-        title: "Search",
-        icon: "bi bi-search"
-    },
-    {
         title: "Gallery",
         icon: "bi-columns-gap"
     },
     {
-        title: "Schedule",
+        title: "Calendar",
         icon: "bi-calendar4-week"
     }
 ];
@@ -192,20 +188,6 @@ const loadTitle = () => {
     $('#home h1 span').innerHTML = title_name;
 }
 
-const search = () => {
-    const search = $('.form-input');
-    
-    search.addEventListener('keypress', (e) => {
-        e.preventDefault;
-
-        if (e.key == "Enter") {
-            const search_value = e.target.value;
-            window.location.href = `https://www.google.com/search?q=${search_value.split(' ').join('+')}`;
-        }
-
-    });
-}
-
 const loadMenu = () => {
     const menu = menu_list.map((list, i) => {
         return templateMenu(list, i);
@@ -216,6 +198,7 @@ const loadMenu = () => {
 
 const loadSection = () => {
     $('.content').innerHTML = preload();
+
     load["Gallery"]();
 
     const list_el_menu = all('.menu a');
@@ -234,20 +217,6 @@ const loadSection = () => {
 }
 
 const load = {
-    "Search": () => {
-        const element = `<div class="search">
-                            <div class="google-icon">
-                                <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Google">
-                            </div>
-                            <div class="form">
-                                <input class="form-input" type="text" placeholder="Search..">
-                            </div>
-                        </div>`
-        
-        $('.content').innerHTML = element;
-        
-        search();
-    },
     "Gallery": () => {
         const element = gallery_list.map((list) => {
             return templateSection(list);
@@ -255,7 +224,7 @@ const load = {
 
         $('.content').innerHTML = element;
     },
-    "Schedule": () => {
+    "Calendar": () => {
         $('.content').innerHTML = preload();
 
         getEvent().then(() => {
@@ -264,44 +233,20 @@ const load = {
             $('.content').innerHTML = schedule;
     
             loadDateNow();
-            moveMonth();
-            dateEventBtn();
-            templateEvent();
-            createNewEvent();
         });
 
     }
 }
 
-const dateChecker = (selected_date) => {
-    
-    const date_now = new Date(new Date().toISOString().substr(0, 10));
-    selected_date = new Date(new Date(selected_date.year, selected_date.month, Number(selected_date.date) + 1).toISOString().substr(0, 10));
-    
-    if (date_now == selected_date || date_now <= selected_date) {
-        $('.new-btn.btn').classList.remove('disable');
-        $('.new-btn.btn').disabled = false;
-    } else {
-        $('.new-btn.btn').classList.add('disable');
-        $('.new-btn.btn').disabled = true;
-    }
-}
-
 const loadDateNow = (year, month) => {
-    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
     const info_header = year ? new Date(year, month, 1) : new Date();
-    const date_now = new Date();
 
     $('.header__info .month').innerHTML = info_header.toLocaleString('en-US', { month: 'short' });
     $('.header__info .month').setAttribute('month', info_header.getMonth());
 
     $('.header__info .year').innerHTML = info_header.getFullYear();
     $('.header__info .year').setAttribute('year', info_header.getFullYear());
-    
-    const date_info = date_now.getDate() + "' " + date_now.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_now.getDay()];
-    $('.event-wrap .date_now').setAttribute('date', date_now.toISOString().substr(0, 10))
-    $('.event-wrap .date_now').innerHTML = date_info;
+
 }
 
 const loadCalendar = (year, month) => {
@@ -314,70 +259,6 @@ const loadCalendar = (year, month) => {
     }
 
     return dates;
-}
-
-const moveMonth = () => {
-    $('.min-btn').addEventListener('click', () => {
-        const month = $('.month').getAttribute('month') - 1;
-        const year = $('.year').getAttribute('year');
-
-        loadDateNow(year, month);
-        modifyDate();
-    });
-
-    $('.max-btn').addEventListener('click', () => {
-        const month = Number($('.month').getAttribute('month')) + 1;
-        const year = $('.year').getAttribute('year');
-
-        loadDateNow(year, month);
-        modifyDate();
-    });
-}
-
-const modifyDate = () => {
-    const days = templateDays();
-    const dates = templateDates();
-
-    $('.table__day tr').innerHTML = days;
-    $('.table__date').innerHTML = dates;
-
-    dateEventBtn();
-}
-
-const dateEventBtn = () => {
-    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const date = all('.table__date .date');
-
-    date.forEach(el => {
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            const selected_date = e.target.getAttribute("date").split("-");
-
-            const obj_date = {
-                date: selected_date.at(2),
-                month: selected_date.at(1),
-                year: selected_date.at(0),
-            }
-
-            const date_convert = new Date(obj_date.year, obj_date.month, obj_date.date);
-
-            const date_info_now = $('.date_now').getAttribute('date');
-            const date_info = date_convert.toISOString().substr(0, 8) + date_convert.getDate();
-
-            if (date_info_now != date_info) {
-                templateEvent(obj_date);
-                dateChecker(obj_date);
-
-                $('.event-wrap .date_now').setAttribute('date', date_info);
-                $('.event-wrap .date_now').innerHTML = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
-            }
-        })
-    });
-}
-
-const truncDesc = (desc) => {
-    return desc && desc.length > 170 ? desc.slice(0, 167).concat('', '...') : desc ?? "";
 }
 
 const getEvent = () => {
@@ -428,68 +309,6 @@ const getEvent = () => {
         });
 
     })
-}
-
-const createNewEvent = () => {
-    const new_event_btn = $('.new-btn');
-
-    new_event_btn.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        const selected_date = $('.date_now').getAttribute('date');
-        const date_format = new Date(selected_date).toISOString().substr(0, 10);
-        
-        const form = document.createRange().createContextualFragment(templateEventForm(date_format), 'text/html');
-        $('.event__list').appendChild(form);
-
-        setTimeout(() => {
-            $('.event__list').classList.add('form');
-            addEvent();
-            cancelForm();
-        }, 200);
-    });
-}
-
-const addEvent = () => {
-    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const addBtn = $('.add-btn');
-
-    addBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        const input = {
-            date : ($('#date').value).split('-'),
-            title : $('#title').value,
-            time_start : $('#start').value,
-            time_end : $('#end').value,
-            desc : $('#desc').value,
-        }
-
-        addData({input});
-
-        const obj_date = {
-            date: input.date.at(2),
-            month: input.date.at(1) - 1,
-            year: input.date.at(0),
-        }
-
-        const date_convert = new Date(obj_date.year, obj_date.month, obj_date.date);
-        const date_info = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
-
-        $('.event-wrap .date_now').setAttribute('date', date_info);
-        $('.event-wrap .date_now').innerHTML = date_convert.getDate() + "' " + date_convert.toLocaleString('en-US', { month: 'short' }) + ", " + day[date_convert.getDay()];
-
-        templateEvent(obj_date);
-
-        const dates = templateDates();
-        $('.table__date').innerHTML = dates;
-        dateEventBtn();
-
-        $('.event__list').classList.remove('form');
-        setTimeout(() => {
-            $('.event__form').remove();
-        }, 300);
-    });
 }
 
 const addData = ({input}) => {
@@ -545,133 +364,6 @@ const addData = ({input}) => {
     localStorage.setItem('events', JSON.stringify(events));
 }
 
-const updateEvent = () => {
-    const update_btn = $('.update-btn');
-
-    update_btn.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        const event_id = ($('#hidden-value').value).split('_');
-
-        let events = JSON.parse(localStorage.getItem('events'));
-        const event = events.find(v => v.id == event_id.at(0));
-        
-        const date = ($('#date').value).split('-');
-        
-        if (date.at(0) == event.year && date.at(1) == event.month && date.at(2) == event.date) {
-            const event_detail = event.events.find((v, i) => i == event_id.at(1));
-
-            event_detail.title = $('#title').value;
-            event_detail.from = $('#start').value;
-            event_detail.to = $('#end').value;
-            event_detail.desc = $('#desc').value;
-
-            localStorage.setItem('events', JSON.stringify(events));
-        } else {
-            event.events = event.events.filter((v, i) => i != event_id.at(1));
-            localStorage.setItem('events', JSON.stringify(events));
-
-            const input = {
-                date: ($('#date').value).split('-'),
-                title: $('#title').value,
-                time_start: $('#start').value,
-                time_end: $('#end').value,
-                desc: $('#desc').value,
-            }
-
-            addData({input});
-        }
-
-        const obj_date = {
-            date: date.at(2),
-            month: date.at(1) - 1,
-            year: date.at(0),
-        }
-
-        templateEvent(obj_date);
-
-        const dates = templateDates();
-        $('.table__date').innerHTML = dates;
-        dateEventBtn();
-
-        $('.event__list').classList.remove('form');
-        setTimeout(() => {
-            $('.event__form').remove();
-        }, 300);
-    });
-}
-
-const removeEvent = () => {
-    const remove_btn = all('.rm-btn');
-
-    remove_btn.forEach(el => {
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-    
-            const id_event = e.target.getAttribute('id').split("_");
-            const today_events = JSON.parse(localStorage.getItem('events'));
-    
-            const event = today_events.find((v) => v.id == id_event.at(0));
-            event.events = event.events.filter((v, i) => i != id_event.at(1));
-
-            localStorage.setItem('events', JSON.stringify(today_events));
-
-            const obj_date = {
-                date: event.date,
-                month: event.month - 1,
-                year: event.year,
-            }
-            templateEvent(obj_date);
-    
-            const dates = templateDates();
-            $('.table__date').innerHTML = dates;
-            dateEventBtn();
-        });
-    });
-}
-
-const cancelForm = () => {
-    const cancel_btn = $('.cancel-btn');
-
-    cancel_btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        $('.event__list').classList.remove('form');
-    
-        setTimeout(() => {
-            $('.event__form').remove();
-        }, 300);
-    });
-}
-
-const editEvent = () => {
-    const edit_btn = all('.edit-btn');
-
-    edit_btn.forEach(el => {
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            const id_event = e.target.getAttribute('id').split("_");
-            const today_events = JSON.parse(localStorage.getItem('events'));
-
-            const event = today_events.find((v) => v.id == id_event.at(0));
-            event.events = event.events.find((v, i) => i == id_event.at(1));
-
-            const date = new Date(event.year, (event.month - 1), (Number(event.date) + 1)).toISOString().substr(0, 10);
-
-            const form = document.createRange().createContextualFragment(templateEventForm(date, event, id_event.at(1), "Update"), 'text/html');
-            $('.event__list').appendChild(form);
-
-            setTimeout(() => {
-                $('.event__list').classList.add('form');
-                updateEvent();
-                cancelForm();
-            }, 200);
-        })
-    });
-}
-
-
 // Template
 const preload = () => {
     return `<div class="loading-wrap">
@@ -681,7 +373,7 @@ const preload = () => {
 
 const templateMenu = (data_menu, index) => {
     return `<li>
-                <div class="menu ${index == 1 ? 'active' : ''}" page="${data_menu.title}">
+                <div class="menu ${index == 0 ? 'active' : ''}" page="${data_menu.title}">
                     <a href="#" page="${data_menu.title}"> 
                         <i class="bi ${data_menu.icon}" page="${data_menu.title}"></i>
                         ${data_menu.title}
@@ -730,57 +422,6 @@ const templateSchedule = () => {
                 <div class="calendar-wrap">
                     ${calendar}
                 </div>
-                <div class="event-wrap">
-                    <div class="event__header">
-                        <div class="event__title">
-                            <h5>Events</h5>
-                            <span class="date_now" date=""></span>
-                        </div>
-                        <div class="event__action">
-                            <button class="new-btn btn">New event</button>
-                        </div>
-                    </div>
-                    <div class="event__list">
-                        <div class="list-wrap">
-                        </div>
-                    </div>
-                </div>
-            </div>`
-}
-
-const templateEventForm = (date, data = null, index = null, type = "Add") => {
-    date = date ?? new Date().toISOString().substr(0, 10);
-
-    return `<div class="event__form">
-                <input type="hidden" id="hidden-value" value="${data?.id}_${index}"/>
-                <div class="form-column">
-                    <div class="form-group date-form">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" min="${date}" value="${date}"/>
-                    </div>
-                    <div class="form-group title-form">
-                        <label for="title">Title</label>
-                        <input type="text" id="title" value="${data?.events.title ?? ''}" />
-                    </div>
-                </div>
-                <div class="form-column">
-                    <div class="form-group time-form">
-                        <label for="start">Time Start</label>
-                        <input type="time" id="start" value="${data?.events.from ?? ''}" />
-                    </div>
-                    <div class="form-group time-form">
-                        <label for="end">Time End</label>
-                        <input type="time" id="end" value="${data?.events.to ?? ''}"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="desc">Desc</label>
-                    <textarea id="desc" rows="3">${data?.events.desc ?? ''}</textarea>
-                </div>
-                <div class="action-form">
-                    <button class="cancel-btn btn">Cancel</button>
-                    <button class="${ type == "Add" ? 'add-btn' : 'update-btn'} btn">${type} Event</button>
-                </div>
             </div>`
 }
 
@@ -792,11 +433,6 @@ const templateCalendar = () => {
                 <div class="header__info">
                     <span class="month" month=""></span>
                     <span class="year" year=""></span>
-                </div>
-                <div class="header__action">
-                    <i class="bi bi-chevron-left min-btn"></i>
-                    <span class="separator"></span>
-                    <i class="bi bi-chevron-right max-btn"></i>
                 </div>
             </div>
             <div class="calendar__body">
@@ -943,84 +579,4 @@ const templateCountEvent = (date) => {
     const event_day = typeof events == "string" ? JSON.parse(events).find(v => v.date == date.date && v.month == (date.month + 1) && v.year == date.year) : null;
     
     return event_day ? "<span></span>".repeat(event_day?.events?.length) : "";
-}
-
-const templateEvent = (date) => {
-    $('.list-wrap').innerHTML = "";
-    
-    if (!date) {
-        date = {
-            date: (new Date()).getDate(),
-            month: (new Date()).getMonth(),
-            year: (new Date()).getFullYear()
-        }
-    }
-
-    const events = localStorage.getItem('events');
-    const today_event = typeof events == "string" ? JSON.parse(events).find(v => v.date == date.date && v.month == (Number(date.month) + 1) && v.year == date.year) : null;
-
-    let event = [];
-
-    if (today_event?.events.length) {
-        event = today_event.events.map((event, i) => {
-            return templateEventCard(today_event.id, event, i);
-        });
-    } else {
-        event = [templateNotEvent()];
-    }
-
-    new Promise((resolve) => {
-        event.forEach((el, i, arr) => {
-            setTimeout(() => {
-                const event_card = document.createRange().createContextualFragment(el, 'text/html');
-                $('.list-wrap').appendChild(event_card);
-    
-                setTimeout(() => {
-                    $(`.list__card[id="${i}"]`).classList.remove('animate');
-                    
-                    if ((arr.length - 1) == i) 
-                        resolve();
-                }, 100);
-            }, 150 * (i + 1));
-        });
-    }).then(() => {
-        editEvent();
-        removeEvent();
-    });
-
-}
-
-const templateEventCard = (event_id, event, index) => {
-    
-    return `<div class="list__card animate" id="${index}">
-                <div class="card__time">
-                    ${event.from} - ${event.to}
-                </div>
-                <div class="card__title">
-                    ${event.title}
-                </div>
-                <div class="card__desc">
-                    ${truncDesc(event.desc)}
-                </div>
-                <div class="card__action">
-                    <a href="#" class="edit-btn" id="${event_id}_${index}">
-                        edit
-                    </a>
-                    <span></span>
-                    <a href="#" class="rm-btn" id="${event_id}_${index}">
-                        remove
-                    </a>
-                </div>
-            </div>`
-}
-
-const templateNotEvent = () => {
-    return `<div class="list__card animate" id="0">
-                <div class="card__title">
-                    Nothing planned for the day
-                </div>
-                <div class="card__desc">
-                    Enjoy your live !
-                </div>
-            </div>`
 }
