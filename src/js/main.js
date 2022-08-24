@@ -263,18 +263,6 @@ const loadCalendar = (year, month) => {
 
 const getEvent = () => {
     return new Promise(resolve => {
-        let sync_time = localStorage.getItem('last_sync') ?? null;
-        sync_time = typeof sync_time == "string" ? JSON.parse(sync_time) : sync_time;
-        
-        if (sync_time) {
-            const sync_date = new Date(sync_time.time).getDate();
-            const now_date = new Date().getDate();
-
-            if (sync_date == now_date) {
-                return resolve(true);
-            }
-        }
-
         api.getEventFromGitlab().then((res) => {
 
             res.reverse().forEach(event => {
