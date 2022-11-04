@@ -196,10 +196,18 @@ const loadMenu = () => {
     $('.nav ul').innerHTML = menu;
 }
 
-const loadSection = () => {
-    $('.content').innerHTML = preload();
+const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+});
 
-    load["Gallery"]();
+const loadSection = () => {
+    let menu = params.menu;
+    let menu_load = menu || "Gallery";
+    
+    $('.content').innerHTML = preload();
+    
+    load[menu_load]();
+    $(`.menu[page="${menu_load}"]`).classList.add("active");
 
     const list_el_menu = all('.menu a');
 
@@ -361,7 +369,7 @@ const preload = () => {
 
 const templateMenu = (data_menu, index) => {
     return `<li>
-                <div class="menu ${index == 0 ? 'active' : ''}" page="${data_menu.title}">
+                <div class="menu" page="${data_menu.title}">
                     <a href="#" page="${data_menu.title}"> 
                         <i class="bi ${data_menu.icon}" page="${data_menu.title}"></i>
                         ${data_menu.title}
