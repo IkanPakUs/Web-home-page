@@ -59,7 +59,7 @@ const gallery_list = [
             {
                 favicon: "https://omni-hotelier.atlassian.net/s/-ia3qmx/b/9/b6b48b2829824b869586ac216d119363/_/favicon-software.ico",
                 name: "Jira Omnih PMS",
-                link: "https://omni-hotelier.atlassian.net/jira/software/projects/OP/boards/6",
+                link: "https://omnihtest.atlassian.net/jira/software/projects/OP/boards/6",
                 link_name: "omni-hotelier.atlassian.net"
             }
         ]
