@@ -46,48 +46,6 @@ const gallery_list = [
                 link: "https://github.com",
                 link_name: "github.com"
             },
-            {
-                favicon: "https://a.trellocdn.com/prgb/dist/images/ios/apple-touch-icon-152x152-precomposed.f2e3f1c236fc15986203.png",
-                name: "Trello",
-                link: "https://trello.com/komangarya1/boards",
-                link_name: "trello.com"
-            },
-        ]
-    },
-    {
-        title: "Programing",
-        bg_color: "#202647",
-        list: [
-            {
-                favicon: "https://laravel.com/img/favicon/favicon-32x32.png",
-                name: "Laravel",
-                link: "https://laravel.com",
-                link_name: "laravel.com"
-            },
-            {
-                favicon: "https://expressjs.com/images/favicon.png",
-                name: "Express Js",
-                link: "https://expressjs.com",
-                link_name: "expressjs.com"
-            },
-            {
-                favicon: "https://vuejs.org/logo.svg",
-                name: "Vue Js",
-                link: "https://vuejs.org",
-                link_name: "vuejs.org"
-            },
-            {
-                favicon: "https://developer.mozilla.org/favicon.ico",
-                name: "Javascript Mdn",
-                link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-                link_name: "developer.mozilla.org"
-            },
-            {
-                favicon: "https://getbootstrap.com/favicon.ico",
-                name: "Bootstrap",
-                link: "https://getbootstrap.com",
-                link_name: "getbootstrap.com"
-            },
         ]
     },
     {
@@ -95,7 +53,7 @@ const gallery_list = [
         bg_color: "#0a5457",
         list: [
             {
-                favicon: "https://cdn.dribbble.com/assets/favicon-b38525134603b9513174ec887944bde1a869eb6cd414f4d640ee48ab2a15a26b.ico",
+                favicon: "https://cdn.dribbble.com/assets/favicon-192x192-d70ad402693bdd1a8460da7f9f3c590e817da7369c5287789ac968cf6947d214.png",
                 name: "Dribble",
                 link: "https://dribbble.com/",
                 link_name: "dribbble.com"
@@ -113,15 +71,15 @@ const gallery_list = [
                 link_name: "draw.io"
             },
             {
-                favicon: "https://www.pexels.com/assets/static/images/meta/favicon.ico",
-                name: "Pexels",
-                link: "https://www.pexels.com/",
+                favicon: "https://excalidraw.com/apple-touch-icon.png",
+                name: "Excalidraw",
+                link: "https://excalidraw.com/",
                 link_name: "pexels.com"
             },
         ]
     },
     {
-        title: "Entertaint",
+        title: "Entertain",
         bg_color: "#26551C",
         list: [
             {
@@ -136,12 +94,6 @@ const gallery_list = [
                 link: "https://www.netflix.com/browse",
                 link_name: "netflix.com"
             },
-            {
-                favicon: "https://secure-media.hotstar.com/web-assets/prod/D+H_favicon.ico",
-                name: "Disney Plus Hotstar",
-                link: "https://www.hotstar.com/id",
-                link_name: "hotstar.com"
-            },
         ]
     },
     {
@@ -149,7 +101,7 @@ const gallery_list = [
         bg_color: "#87612B",
         list: [
             {
-                favicon: "https://mail.google.com/favicon.ico",
+                favicon: "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
                 name: "Gmail",
                 link: "https://mail.google.com/mail/u/0/#inbox",
                 link_name: "mail.google.com"
@@ -161,16 +113,10 @@ const gallery_list = [
                 link_name: "linkedin.com"
             },
             {
-                favicon: "https://elearning.stikom-bali.ac.id/pluginfile.php/1/theme_mb2mcl/favicon/1646982263/itbstikombali.ico",
-                name: "E-Learning Stikom Bali",
-                link: "https://elearning.stikom-bali.ac.id",
-                link_name: "elearning.stikom-bali.ac.id"
-            },
-            {
-                favicon: "https://sion.stikom-bali.ac.id/assets/images/icon.png",
-                name: "Sion Stikom Bali",
-                link: "https://sion.stikom-bali.ac.id/",
-                link_name: "sion.stikom-bali.ac.id"
+                favicon: "https://cdn.oaistatic.com/assets/favicon-o20kmmos.svg",
+                name: "ChatGPT",
+                link: "https://chatgpt.com/",
+                link_name: "chatgpt.com"
             },
         ]
     }
